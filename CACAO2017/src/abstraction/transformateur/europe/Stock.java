@@ -41,7 +41,7 @@ public class Stock {
 	 */
 	public Stock(){
 		this(0,44000);
-		this.journal=new Journal("Journal du Stock des Transformateurs d'Europe");
+		this.journal=new Journal("Stock des Transformateurs d'Europe");
 		Monde.LE_MONDE.ajouterJournal(this.journal);
 	}
 	

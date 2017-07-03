@@ -39,7 +39,7 @@ public class Distributeur implements Acteur,IDistributeur,DistribClient, IDistri
 		this.stock = new Stock();
 		this.stock.ajoutStock(40000);
 		this.fonds = new Tresorerie(80000);
- 	    this.journal = new Journal("Journal de "+this.nom);
+ 	    this.journal = new Journal(this.nom);
  	    Monde.LE_MONDE.ajouterJournal(this.journal);
 		this.increment = 0;
 		this.prixMoyen = 0;
