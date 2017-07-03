@@ -56,7 +56,7 @@ public class Transformateur implements ITransformateurMarcheDistrib, Acteur,ICon
 	public static final int COUT_ANNEXE=1000000; //couts annexes comportant les salaires et tout les couts potentiels autre que le cacao
 	public static double[] CACAO_NECESSAIRE_PREVISION ={32,32,32,48,32,32,32,72,32,32,32,32,32,32,32,32,32,32,32,32,32,60,32,32,32,104};
 	public static final double RATIO_CONTRAT_PRODUCTEUR= 0.75; // Proportion de la quantité prévisionnelle minimum sur un an que l'on demande pour le contrat avec les producteurs
-	public static final double PART_CONTRAT_TD=0.9;
+	public static final double PART_CONTRAT_TD=0.7;
 	public static final double TAUX_ACCEPTATION_CONTRAT=0.8;
 	
 	//ces static sont celles correspondantes aux contrats distributeurs
@@ -83,7 +83,7 @@ public class Transformateur implements ITransformateurMarcheDistrib, Acteur,ICon
 		this.stockChocolat=new Indicateur("3_TRAN_EU_stock_chocolat",this,this.s.getStockChocolat());
 		this.commande=new Indicateur("3_TRAN_EU_commande_actuelle",this,0.0);
 		this.tresorerie=new Indicateur("3_TRAN_EU_solde",this,this.compte.getCompte());
-		this.journal = new Journal("Journal de Transformateur Europe");
+		this.journal = new Journal("Transformateur Europe");
 		this.prixdevente=new Indicateur("3_TRAN_EU_prixdevente",this,0.0);
 		Monde.LE_MONDE.ajouterIndicateur( this.stockChocolat );
 		Monde.LE_MONDE.ajouterIndicateur( this.commande );
@@ -107,10 +107,9 @@ public class Transformateur implements ITransformateurMarcheDistrib, Acteur,ICon
 	public double getprixMin() {
 		double stockChocolat=this.s.getStockChocolat();
 		if (stockChocolat<Stock.STOCK_MIN || prixmin<0.004){ // On se fixe un stock minimum de "secours" et si on le dépasse on renvoie une valeur qui doit couper la boucle du marché.
-			return 0;
-		}
-		else{
-			this.prixmin=PRIX_MAX-PRIX_MIN*this.stockChocolat.getValeur()/CHOCOLAT_NECESSAIRE; //calcul le nouveau prix minimum auquel on souhaite vendre
+			return 1000000000;
+		} else {
+			this.prixmin=PRIX_MAX-PRIX_MAX*Stock.STOCK_MIN/this.stockChocolat.getValeur(); //calcul le nouveau prix minimum auquel on souhaite vendre
 			//System.out.println("prix min de transfo eu : "+prixmin);				  // en tenant compte du stock de chocolat que l'on a.
 			return this.prixmin;
 			}
@@ -173,7 +172,7 @@ public class Transformateur implements ITransformateurMarcheDistrib, Acteur,ICon
 			this.s.ajoutChocolat(this.s.getStockCacao()/RATIO_CACAO_CHOCO); // On remplit notre stock tout le temps de sorte à avoir 44000
 			this.s.setStockCacao(0); // Retrait du cacao nécessaire à la transformation
 		} else {
-			this.s.setStockCacao(CHOCOLAT_NECESSAIRE); // On remplit notre stock tout le temps de sorte à avoir 44000
+			this.s.setStockCacao(2*CHOCOLAT_NECESSAIRE); // On remplit notre stock tout le temps de sorte à avoir 44000
 			this.s.setStockCacao(0);
 		}
 		this.s.ajoutCacao(this.qttContrat[0]);
@@ -185,7 +184,7 @@ public class Transformateur implements ITransformateurMarcheDistrib, Acteur,ICon
 	public void CoutStock(){
 		double cout=0;
 		if (this.stockChocolat.getValeur()>=CHOCOLAT_NECESSAIRE){
-			cout=(this.s.getStockChocolat()-CHOCOLAT_NECESSAIRE)*1000000;
+			cout=(this.s.getStockChocolat()-CHOCOLAT_NECESSAIRE)*1000;
 			//System.out.println(cout+"est le cout des stock");
 		}
 		this.compte.debit(cout);
@@ -383,9 +382,8 @@ public class Transformateur implements ITransformateurMarcheDistrib, Acteur,ICon
 	}
 	
 	public void impots(){
-		this.compte.debit(0.42*this.compte.getCompte());
+		this.compte.debit(this.compte.getCompte()*0.45);
 	}
-	
 	/**
 	 * @objectif Faire une prevision du cacao à demander aux producteurs en tenant compte des pics
 	 * @param arg

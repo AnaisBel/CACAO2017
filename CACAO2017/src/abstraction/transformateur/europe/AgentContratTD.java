@@ -35,29 +35,43 @@ public class AgentContratTD implements Acteur{
 	public void next(){
 		for(ITransfoContrat t : this.getTransformateurs()) {     // Création de l'ensemble des devis.
 			for (IDistriContrat d : this.getDistributeurs()){
+				if (d!=null && t!=null){
 				Devis devis=new Devis(t,d);
 				l.add(devis);
 				t.propositionInitiale(devis);
 				d.receptionDevis(devis);
+				}
 			}
 		}
 		for (IDistriContrat d : this.getDistributeurs()){ 
-			d.demandeQuantite();
+			if (d!=null ){
+				d.demandeQuantite();
+			}
 		}
 		for(ITransfoContrat t : this.getTransformateurs()) {
-			t.quantiteFournie();
+			if (  t!=null){
+				t.quantiteFournie();
+			}
 		}
 		for (IDistriContrat d : this.getDistributeurs()){
-			d.contreProposition();
+			if (d!=null ){
+				d.contreProposition();
+			}
 		}
 		for(ITransfoContrat t : this.getTransformateurs()) { 
-			t.acceptationInitiale();
+			if ( t!=null){
+				t.acceptationInitiale();
+			}
 		}
 		for (IDistriContrat d : this.getDistributeurs()){
-			d.acceptationFinale();
+			if (d!=null ){
+				d.acceptationFinale();
+			}
 		}
 		for(ITransfoContrat t : this.getTransformateurs()) { 
-			t.notification();
+			if ( t!=null){
+				t.notification();
+			}
 		}
 	}
 

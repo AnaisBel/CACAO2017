@@ -1,3 +1,4 @@
+
 // Classe codée par Julien : CODE INUTILE
 /*package abstraction.distributeur.europe;
 import abstraction.fourni.v0.*; 
